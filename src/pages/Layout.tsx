@@ -7,7 +7,7 @@ function Layout() {
       <div className="flex-1">
         <Navbar />
 
-        <main className="p-6">
+        <main>
           <Outlet />
         </main>
       </div>

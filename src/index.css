@@ -140,7 +140,7 @@
   }
 
   .heading-card {
-    @apply text-lg font-semibold text-neutral-900;
+    @apply text-xl font-semibold text-neutral-900;
   }
 
   .heading-sub {
