@@ -133,8 +133,10 @@ function pad2(value: number) {
   return value.toString().padStart(2, "0");
 }
 
+const datasetCreatedAt = new Date();
+
 function buildISODate(offsetDays: number) {
-  const date = new Date();
+  const date = new Date(datasetCreatedAt);
   date.setHours(0, 0, 0, 0);
   date.setDate(date.getDate() + offsetDays);
   return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
@@ -142,7 +144,7 @@ function buildISODate(offsetDays: number) {
 
 function makeTask(index: number): Task {
   const createdDaysAgo = (index * 11) % 90;
-  const createdAt = new Date();
+  const createdAt = new Date(datasetCreatedAt);
   createdAt.setDate(createdAt.getDate() - createdDaysAgo);
 
   const status = statusOptions[index % statusOptions.length];
@@ -259,14 +261,18 @@ export const mockTaskApi = {
       const bValue = b[sort] ?? "";
 
       if (typeof aValue === "string" && typeof bValue === "string") {
-        return aValue.localeCompare(bValue) * direction;
+        const comparison = aValue.localeCompare(bValue);
+        return comparison !== 0
+          ? comparison * direction
+          : a.id.localeCompare(b.id);
       }
 
-      return (
-        ((new Date(aValue as string).getTime() || 0) -
-          (new Date(bValue as string).getTime() || 0)) *
-        direction
-      );
+      const comparison =
+        (new Date(aValue as string).getTime() || 0) -
+        (new Date(bValue as string).getTime() || 0);
+      return comparison !== 0
+        ? comparison * direction
+        : a.id.localeCompare(b.id);
     });
 
     const total = filtered.length;
