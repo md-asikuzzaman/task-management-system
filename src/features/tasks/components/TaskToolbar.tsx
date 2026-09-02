@@ -41,7 +41,7 @@ const sortOptions = [
 
 interface FilterSelectProps {
   value: string;
-  options: Array<{ value: string; label: string }>;
+  options: readonly { value: string; label: string }[];
   onChange: (value: string) => void;
   "aria-label": string;
 }
@@ -167,7 +167,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
                       Status
                     </label>
                     <FilterSelect
-                      value={query.status}
+                      value={query.status ?? "all"}
                       onChange={(value) =>
                         setStatus(value as TaskStatus | "all")
                       }
@@ -181,7 +181,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
                       Priority
                     </label>
                     <FilterSelect
-                      value={query.priority}
+                      value={query.priority ?? "all"}
                       onChange={(value) =>
                         setPriority(value as TaskPriority | "all")
                       }
@@ -195,7 +195,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
                       Owner
                     </label>
                     <FilterSelect
-                      value={query.owner}
+                      value={query.owner ?? "all"}
                       onChange={setOwner}
                       options={[
                         { value: "all", label: "All owners" },
@@ -213,7 +213,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
                       Sort
                     </label>
                     <FilterSelect
-                      value={query.sort}
+                      value={query.sort ?? "updatedAt"}
                       onChange={(value) =>
                         setSort(value as typeof query.sort, query.order)
                       }
