@@ -1,6 +1,14 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Dialog from "@radix-ui/react-dialog";
-import { ChevronDown, Filter, Search, SlidersHorizontal, SortAsc, X } from "lucide-react";
+import * as Select from "@radix-ui/react-select";
+import {
+  ChevronDown,
+  Filter,
+  Search,
+  SlidersHorizontal,
+  SortAsc,
+  X,
+} from "lucide-react";
 import { useMemo } from "react";
 
 import { useTaskQueryState } from "../hooks/useTaskQueryState";
@@ -31,8 +39,65 @@ const sortOptions = [
   { value: "priority", label: "Priority" },
 ] as const;
 
+interface FilterSelectProps {
+  value: string;
+  options: Array<{ value: string; label: string }>;
+  onChange: (value: string) => void;
+  "aria-label": string;
+}
+
+function FilterSelect({
+  value,
+  options,
+  onChange,
+  "aria-label": ariaLabel,
+}: FilterSelectProps) {
+  return (
+    <Select.Root value={value} onValueChange={onChange}>
+      <Select.Trigger
+        aria-label={ariaLabel}
+        className="flex h-10 w-full items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 text-left text-sm text-slate-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
+      >
+        <Select.Value />
+        <Select.Icon>
+          <ChevronDown className="h-4 w-4 text-slate-400" />
+        </Select.Icon>
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Content
+          position="popper"
+          side="bottom"
+          sideOffset={4}
+          className="z-[60] max-h-60 min-w-[var(--radix-select-trigger-width)] overflow-y-auto rounded-lg border border-slate-200 bg-white p-1 shadow-xl"
+        >
+          <Select.Viewport>
+            {options.map((option) => (
+              <Select.Item
+                key={option.value}
+                value={option.value}
+                className="relative flex cursor-pointer items-center rounded-md px-3 py-2 text-sm text-slate-700 outline-none data-[highlighted]:bg-slate-100"
+              >
+                <Select.ItemText>{option.label}</Select.ItemText>
+              </Select.Item>
+            ))}
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  );
+}
+
 export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
-  const { query, setSearch, setStatus, setPriority, setOwner, setSort, clearFilters, hasActiveFilters } = useTaskQueryState();
+  const {
+    query,
+    setSearch,
+    setStatus,
+    setPriority,
+    setOwner,
+    setSort,
+    clearFilters,
+    hasActiveFilters,
+  } = useTaskQueryState();
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -79,11 +144,18 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
               <Dialog.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md rounded-t-2xl border border-slate-200 bg-white p-4 shadow-2xl sm:inset-y-0 sm:left-auto sm:right-4 sm:top-4 sm:mx-0 sm:max-w-sm sm:rounded-2xl">
                 <div className="mb-4 flex items-center justify-between">
                   <div>
-                    <Dialog.Title className="text-lg font-semibold text-slate-900">Filters</Dialog.Title>
-                    <p className="text-sm text-slate-500">Refine your task list</p>
+                    <Dialog.Title className="text-lg font-semibold text-slate-900">
+                      Filters
+                    </Dialog.Title>
+                    <p className="text-sm text-slate-500">
+                      Refine your task list
+                    </p>
                   </div>
                   <Dialog.Close asChild>
-                    <button className="rounded-md p-2 text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200" aria-label="Close filters">
+                    <button
+                      className="rounded-md p-2 text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
+                      aria-label="Close filters"
+                    >
                       <X className="h-4 w-4" />
                     </button>
                   </Dialog.Close>
@@ -91,56 +163,63 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">Status</label>
-                    <select
+                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                      Status
+                    </label>
+                    <FilterSelect
                       value={query.status}
-                      onChange={(event) => setStatus(event.target.value as TaskStatus | "all")}
-                      className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
-                    >
-                      {statusOptions.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                      ))}
-                    </select>
+                      onChange={(value) =>
+                        setStatus(value as TaskStatus | "all")
+                      }
+                      options={statusOptions}
+                      aria-label="Status"
+                    />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">Priority</label>
-                    <select
+                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                      Priority
+                    </label>
+                    <FilterSelect
                       value={query.priority}
-                      onChange={(event) => setPriority(event.target.value as TaskPriority | "all")}
-                      className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
-                    >
-                      {priorityOptions.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                      ))}
-                    </select>
+                      onChange={(value) =>
+                        setPriority(value as TaskPriority | "all")
+                      }
+                      options={priorityOptions}
+                      aria-label="Priority"
+                    />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">Owner</label>
-                    <select
+                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                      Owner
+                    </label>
+                    <FilterSelect
                       value={query.owner}
-                      onChange={(event) => setOwner(event.target.value)}
-                      className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
-                    >
-                      <option value="all">All owners</option>
-                      {mockUsers.map((user) => (
-                        <option key={user.id} value={user.id}>{user.name}</option>
-                      ))}
-                    </select>
+                      onChange={setOwner}
+                      options={[
+                        { value: "all", label: "All owners" },
+                        ...mockUsers.map((user) => ({
+                          value: user.id,
+                          label: user.name,
+                        })),
+                      ]}
+                      aria-label="Owner"
+                    />
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">Sort</label>
-                    <select
+                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                      Sort
+                    </label>
+                    <FilterSelect
                       value={query.sort}
-                      onChange={(event) => setSort(event.target.value as typeof query.sort, query.order)}
-                      className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
-                    >
-                      {sortOptions.map((option) => (
-                        <option key={option.value} value={option.value}>{option.label}</option>
-                      ))}
-                    </select>
+                      onChange={(value) =>
+                        setSort(value as typeof query.sort, query.order)
+                      }
+                      options={sortOptions}
+                      aria-label="Sort"
+                    />
                   </div>
                 </div>
 
@@ -177,7 +256,10 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
               </button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content align="end" className="z-50 min-w-48 rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
+              <DropdownMenu.Content
+                align="end"
+                className="z-50 min-w-48 rounded-xl border border-slate-200 bg-white p-1 shadow-xl"
+              >
                 {sortOptions.map((option) => (
                   <DropdownMenu.Item
                     key={option.value}
@@ -185,15 +267,21 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
                     className="flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 outline-none hover:bg-slate-100 focus:bg-slate-100"
                   >
                     {option.label}
-                    {query.sort === option.value ? <SlidersHorizontal className="h-3.5 w-3.5 text-violet-600" /> : null}
+                    {query.sort === option.value ? (
+                      <SlidersHorizontal className="h-3.5 w-3.5 text-violet-600" />
+                    ) : null}
                   </DropdownMenu.Item>
                 ))}
                 <DropdownMenu.Separator className="my-1 h-px bg-slate-200" />
                 <DropdownMenu.Item
-                  onSelect={() => setSort(query.sort, query.order === "asc" ? "desc" : "asc")}
+                  onSelect={() =>
+                    setSort(query.sort, query.order === "asc" ? "desc" : "asc")
+                  }
                   className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-700 outline-none hover:bg-slate-100 focus:bg-slate-100"
                 >
-                  {query.order === "asc" ? "Switch to descending" : "Switch to ascending"}
+                  {query.order === "asc"
+                    ? "Switch to descending"
+                    : "Switch to ascending"}
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
@@ -212,11 +300,23 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
       {hasActiveFilters ? (
         <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
           <span className="font-medium">Active:</span>
-          {query.search ? <span className="rounded-full bg-slate-100 px-2 py-1">Search</span> : null}
-          {query.status !== "all" ? <span className="rounded-full bg-slate-100 px-2 py-1">Status</span> : null}
-          {query.priority !== "all" ? <span className="rounded-full bg-slate-100 px-2 py-1">Priority</span> : null}
-          {query.owner !== "all" ? <span className="rounded-full bg-slate-100 px-2 py-1">Owner</span> : null}
-          {query.sort !== "updatedAt" || query.order !== "desc" ? <span className="rounded-full bg-slate-100 px-2 py-1">Sort</span> : null}
+          {query.search ? (
+            <span className="rounded-full bg-slate-100 px-2 py-1">Search</span>
+          ) : null}
+          {query.status !== "all" ? (
+            <span className="rounded-full bg-slate-100 px-2 py-1">Status</span>
+          ) : null}
+          {query.priority !== "all" ? (
+            <span className="rounded-full bg-slate-100 px-2 py-1">
+              Priority
+            </span>
+          ) : null}
+          {query.owner !== "all" ? (
+            <span className="rounded-full bg-slate-100 px-2 py-1">Owner</span>
+          ) : null}
+          {query.sort !== "updatedAt" || query.order !== "desc" ? (
+            <span className="rounded-full bg-slate-100 px-2 py-1">Sort</span>
+          ) : null}
         </div>
       ) : null}
     </div>
