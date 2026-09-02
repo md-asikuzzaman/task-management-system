@@ -39,14 +39,14 @@ export function TaskTable({ tasks, isLoading, onOpenTask, onStatusChange }: Task
                     <button
                       type="button"
                       onClick={() => onOpenTask(task.id)}
-                      className="max-w-[280px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
+                      className="max-w-70 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
                     >
                       <div className="flex items-start gap-2">
                         {overdue ? <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" /> : null}
                         <div>
                           <div className="truncate font-medium text-slate-900">{task.title}</div>
                           {task.description ? (
-                            <div className="mt-1 max-w-[240px] truncate text-xs text-slate-500">{task.description}</div>
+                            <div className="mt-1 max-w-60 truncate text-xs text-slate-500">{task.description}</div>
                           ) : null}
                         </div>
                       </div>
@@ -59,7 +59,7 @@ export function TaskTable({ tasks, isLoading, onOpenTask, onStatusChange }: Task
                           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100 text-xs font-semibold text-violet-700">
                             {task.owner.avatar ?? task.owner.name.slice(0, 2).toUpperCase()}
                           </div>
-                          <span className="max-w-[140px] truncate text-sm text-slate-700">{task.owner.name}</span>
+                          <span className="max-w-35 truncate text-sm text-slate-700">{task.owner.name}</span>
                         </>
                       ) : (
                         <span className="text-sm text-slate-400">Unassigned</span>
@@ -79,7 +79,7 @@ export function TaskTable({ tasks, isLoading, onOpenTask, onStatusChange }: Task
                         </button>
                       </DropdownMenu.Trigger>
                       <DropdownMenu.Portal>
-                        <DropdownMenu.Content align="start" className="z-50 min-w-[180px] rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
+                        <DropdownMenu.Content align="start" className="z-50 min-w-45 rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
                           {statusCycle.map((status) => (
                             <DropdownMenu.Item
                               key={status}
@@ -162,7 +162,7 @@ export function TaskTable({ tasks, isLoading, onOpenTask, onStatusChange }: Task
                       <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
                     </button>
                   </DropdownMenu.Trigger>
-                  <DropdownMenu.Content align="start" className="z-50 min-w-[180px] rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
+                  <DropdownMenu.Content align="start" className="z-50 min-w-45 rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
                     {statusCycle.map((status) => (
                       <DropdownMenu.Item
                         key={status}
