@@ -97,7 +97,7 @@ export function getStatusBadgeClasses(status: TaskStatus) {
     case "todo":
       return "bg-slate-100 text-slate-700 ring-slate-200";
     case "in_progress":
-      return "bg-blue-100 text-blue-700 ring-blue-200";
+      return "bg-blue-100 text-blue-700 ring-blue-200 shrink-0";
     case "review":
       return "bg-violet-100 text-violet-700 ring-violet-200";
     case "done":
