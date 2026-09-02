@@ -1,10 +1,5 @@
-import {
-  AlertTriangle,
-  ChevronDown,
-  MoreHorizontal,
-  PencilLine,
-} from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { AlertTriangle, ChevronDown, PencilLine } from "lucide-react";
 
 import type { Task, TaskStatus } from "../types";
 import {
@@ -153,13 +148,6 @@ export function TaskTable({
                       >
                         <PencilLine className="h-3.5 w-3.5" />
                         View
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={`Open actions for ${task.title}`}
-                        className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
