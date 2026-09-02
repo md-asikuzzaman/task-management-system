@@ -141,7 +141,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
             </Dialog.Trigger>
             <Dialog.Portal>
               <Dialog.Overlay className="fixed inset-0 bg-slate-900/35" />
-              <Dialog.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md rounded-t-2xl border border-slate-200 bg-white p-4 shadow-xl sm:inset-y-0 sm:left-auto sm:right-4 sm:top-4 sm:mx-0 sm:max-w-sm sm:rounded-2xl">
+              <Dialog.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md rounded-t-2xl border border-slate-200 bg-white p-4 shadow-xl sm:inset-y-0 sm:left-auto sm:right-4 sm:top-4 sm:bottom-4 sm:mx-0 sm:max-w-sm sm:rounded-2xl">
                 <div className="mb-4 flex items-center justify-between">
                   <div>
                     <Dialog.Title className="text-lg font-semibold text-slate-900">
