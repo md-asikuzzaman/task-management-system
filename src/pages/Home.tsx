@@ -23,16 +23,27 @@ const Home = () => {
   const detailDialogOpen = useTaskUiStore((state) => state.detailDialogOpen);
   const selectedTaskId = useTaskUiStore((state) => state.selectedTaskId);
   const setCreateTaskOpen = useTaskUiStore((state) => state.setCreateTaskOpen);
-  const setDetailDialogOpen = useTaskUiStore((state) => state.setDetailDialogOpen);
+  const setDetailDialogOpen = useTaskUiStore(
+    (state) => state.setDetailDialogOpen,
+  );
   const setSelectedTaskId = useTaskUiStore((state) => state.setSelectedTaskId);
 
   const tasks = data?.tasks ?? [];
   const page = data?.page ?? query.page ?? 1;
   const totalPages = data?.totalPages ?? 1;
+  const summary = data?.summary ?? {
+    total: 0,
+    inProgress: 0,
+    overdue: 0,
+    unassigned: 0,
+  };
 
   const hasResults = useMemo(() => tasks.length > 0, [tasks.length]);
 
-  const handleStatusChange = (taskId: string, status: "todo" | "in_progress" | "review" | "done") => {
+  const handleStatusChange = (
+    taskId: string,
+    status: "todo" | "in_progress" | "review" | "done",
+  ) => {
     updateStatus.mutate({ taskId, status });
   };
 
@@ -43,29 +54,50 @@ const Home = () => {
 
   return (
     <Container className="space-y-6 py-6">
-      <SummaryCards tasks={tasks} />
+      <SummaryCards summary={summary} />
 
       <TaskToolbar onCreateTask={() => setCreateTaskOpen(true)} />
 
       {isLoading ? (
         <LoadingSkeleton />
       ) : isError ? (
-        <ErrorState message="Please check your connection and try again." onRetry={() => refetch()} />
+        <ErrorState
+          message="Please check your connection and try again."
+          onRetry={() => refetch()}
+        />
       ) : !hasResults ? (
         <EmptyState
-          title={query.search || query.status !== "all" || query.priority !== "all" || query.owner !== "all" ? "No tasks match your filters" : "No tasks yet"}
+          title={
+            query.search ||
+            query.status !== "all" ||
+            query.priority !== "all" ||
+            query.owner !== "all"
+              ? "No tasks match your filters"
+              : "No tasks yet"
+          }
           description={
-            query.search || query.status !== "all" || query.priority !== "all" || query.owner !== "all"
+            query.search ||
+            query.status !== "all" ||
+            query.priority !== "all" ||
+            query.owner !== "all"
               ? "Try adjusting the filters to widen the results."
               : "Get started by adding your first team task."
           }
           actionLabel={
-            query.search || query.status !== "all" || query.priority !== "all" || query.owner !== "all"
+            query.search ||
+            query.status !== "all" ||
+            query.priority !== "all" ||
+            query.owner !== "all"
               ? "Clear filters"
               : "Add task"
           }
           onAction={() => {
-            if (query.search || query.status !== "all" || query.priority !== "all" || query.owner !== "all") {
+            if (
+              query.search ||
+              query.status !== "all" ||
+              query.priority !== "all" ||
+              query.owner !== "all"
+            ) {
               clearFilters();
               return;
             }
@@ -74,12 +106,23 @@ const Home = () => {
         />
       ) : (
         <>
-          <TaskTable tasks={tasks} onOpenTask={handleOpenTask} onStatusChange={handleStatusChange} />
-          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+          <TaskTable
+            tasks={tasks}
+            onOpenTask={handleOpenTask}
+            onStatusChange={handleStatusChange}
+          />
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         </>
       )}
 
-      <CreateTaskDialog open={createTaskOpen} onOpenChange={setCreateTaskOpen} />
+      <CreateTaskDialog
+        open={createTaskOpen}
+        onOpenChange={setCreateTaskOpen}
+      />
       <TaskDetailsDialog
         taskId={selectedTaskId}
         open={detailDialogOpen}

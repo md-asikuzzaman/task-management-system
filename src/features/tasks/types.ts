@@ -1,6 +1,11 @@
 export type TaskStatus = "todo" | "in_progress" | "review" | "done";
 export type TaskPriority = "low" | "medium" | "high" | "urgent";
-export type SortField = "createdAt" | "updatedAt" | "dueDate" | "title" | "priority";
+export type SortField =
+  | "createdAt"
+  | "updatedAt"
+  | "dueDate"
+  | "title"
+  | "priority";
 
 export interface User {
   id: string;
@@ -47,4 +52,12 @@ export interface TaskListResponse {
   page: number;
   pageSize: number;
   totalPages: number;
+  summary: TaskSummary;
+}
+
+export interface TaskSummary {
+  total: number;
+  inProgress: number;
+  overdue: number;
+  unassigned: number;
 }

@@ -1,28 +1,76 @@
-import type { CreateTaskInput, Task, TaskListResponse, TaskPriority, TaskQuery, TaskStatus } from "../types";
+import type {
+  CreateTaskInput,
+  Task,
+  TaskListResponse,
+  TaskPriority,
+  TaskQuery,
+  TaskStatus,
+} from "../types";
+import { isTaskOverdue } from "../utils/taskUtils";
 
 const statusOptions: TaskStatus[] = ["todo", "in_progress", "review", "done"];
 const priorityOptions: TaskPriority[] = ["low", "medium", "high", "urgent"];
 
 const users = [
-  { id: "u-1", name: "Alyssa Thompson", email: "alyssa@team.com", avatar: "AT" },
+  {
+    id: "u-1",
+    name: "Alyssa Thompson",
+    email: "alyssa@team.com",
+    avatar: "AT",
+  },
   { id: "u-2", name: "Marcus Chen", email: "marcus@team.com", avatar: "MC" },
   { id: "u-3", name: "Nadia Patel", email: "nadia@team.com", avatar: "NP" },
   { id: "u-4", name: "Daniel Brooks", email: "daniel@team.com", avatar: "DB" },
-  { id: "u-5", name: "Jasmine Alvarez", email: "jasmine@team.com", avatar: "JA" },
+  {
+    id: "u-5",
+    name: "Jasmine Alvarez",
+    email: "jasmine@team.com",
+    avatar: "JA",
+  },
   { id: "u-6", name: "Ethan Walker", email: "ethan@team.com", avatar: "EW" },
   { id: "u-7", name: "Priya Nair", email: "priya@team.com", avatar: "PN" },
   { id: "u-8", name: "Samuel Ortiz", email: "samuel@team.com", avatar: "SO" },
   { id: "u-9", name: "Olivia Martin", email: "olivia@team.com", avatar: "OM" },
   { id: "u-10", name: "Noah Kim", email: "noah@team.com", avatar: "NK" },
-  { id: "u-11", name: "Sophia Rodriguez", email: "sophia@team.com", avatar: "SR" },
-  { id: "u-12", name: "Alexander Johnson", email: "alex@team.com", avatar: "AJ" },
+  {
+    id: "u-11",
+    name: "Sophia Rodriguez",
+    email: "sophia@team.com",
+    avatar: "SR",
+  },
+  {
+    id: "u-12",
+    name: "Alexander Johnson",
+    email: "alex@team.com",
+    avatar: "AJ",
+  },
   { id: "u-13", name: "Ming Long", email: "ming@team.com", avatar: "ML" },
-  { id: "u-14", name: "Rebecca Nguyen", email: "rebecca@team.com", avatar: "RN" },
-  { id: "u-15", name: "Christopher Evans", email: "christopher@team.com", avatar: "CE" },
+  {
+    id: "u-14",
+    name: "Rebecca Nguyen",
+    email: "rebecca@team.com",
+    avatar: "RN",
+  },
+  {
+    id: "u-15",
+    name: "Christopher Evans",
+    email: "christopher@team.com",
+    avatar: "CE",
+  },
   { id: "u-16", name: "Hannah Patel", email: "hannah@team.com", avatar: "HP" },
   { id: "u-17", name: "Zoe Richardson", email: "zoe@team.com", avatar: "ZR" },
-  { id: "u-18", name: "Benjamin Lopez", email: "benjamin@team.com", avatar: "BL" },
-  { id: "u-19", name: "Avery Elizabeth Thompson-Smith", email: "avery@team.com", avatar: "AT" },
+  {
+    id: "u-18",
+    name: "Benjamin Lopez",
+    email: "benjamin@team.com",
+    avatar: "BL",
+  },
+  {
+    id: "u-19",
+    name: "Avery Elizabeth Thompson-Smith",
+    email: "avery@team.com",
+    avatar: "AT",
+  },
   { id: "u-20", name: "Lucas Grant", email: "lucas@team.com", avatar: "LG" },
 ];
 
@@ -105,7 +153,14 @@ function makeTask(index: number): Task {
   const hasDescription = index % 11 !== 0;
   const hasDueDate = index % 7 !== 0;
 
-  const dueOffset = index % 18 === 0 ? -7 : index % 23 === 0 ? 0 : index % 29 === 0 ? 8 : (index % 12) - 3;
+  const dueOffset =
+    index % 18 === 0
+      ? -7
+      : index % 23 === 0
+        ? 0
+        : index % 29 === 0
+          ? 8
+          : (index % 12) - 3;
   const dueDate = hasDueDate ? buildISODate(dueOffset) : undefined;
 
   const openedAt = new Date(createdAt);
@@ -113,18 +168,26 @@ function makeTask(index: number): Task {
 
   return {
     id: `task-${index + 1}`,
-    title: isLongTitle ? longTitles[index % longTitles.length] : `Task ${index + 1}: ${longTitles[index % longTitles.length].slice(0, 45)}`,
-    description: hasDescription ? descriptions[index % descriptions.length] : undefined,
+    title: isLongTitle
+      ? longTitles[index % longTitles.length]
+      : `Task ${index + 1}: ${longTitles[index % longTitles.length].slice(0, 45)}`,
+    description: hasDescription
+      ? descriptions[index % descriptions.length]
+      : undefined,
     status,
     priority,
     owner,
     dueDate,
     createdAt: openedAt.toISOString(),
-    updatedAt: new Date(openedAt.getTime() + (index % 8) * 86400000).toISOString(),
+    updatedAt: new Date(
+      openedAt.getTime() + (index % 8) * 86400000,
+    ).toISOString(),
   };
 }
 
-const tasks: Task[] = Array.from({ length: 248 }, (_, index) => makeTask(index));
+const tasks: Task[] = Array.from({ length: 248 }, (_, index) =>
+  makeTask(index),
+);
 
 async function wait(ms = 300) {
   await new Promise((resolve) => {
@@ -144,6 +207,13 @@ export const mockTaskApi = {
     const order = query.order ?? "desc";
     const page = Math.max(1, Number(query.page ?? 1));
     const pageSize = Math.max(1, Number(query.pageSize ?? 10));
+
+    const summary = {
+      total: tasks.length,
+      inProgress: tasks.filter((task) => task.status === "in_progress").length,
+      overdue: tasks.filter((task) => isTaskOverdue(task)).length,
+      unassigned: tasks.filter((task) => !task.owner).length,
+    };
 
     let filtered = [...tasks];
 
@@ -174,7 +244,11 @@ export const mockTaskApi = {
       const direction = order === "asc" ? 1 : -1;
 
       if (sort === "priority") {
-        return ((priorityOptions.indexOf(a.priority) ?? 0) - (priorityOptions.indexOf(b.priority) ?? 0)) * direction;
+        return (
+          ((priorityOptions.indexOf(a.priority) ?? 0) -
+            (priorityOptions.indexOf(b.priority) ?? 0)) *
+          direction
+        );
       }
 
       if (sort === "title") {
@@ -188,7 +262,11 @@ export const mockTaskApi = {
         return aValue.localeCompare(bValue) * direction;
       }
 
-      return ((new Date(aValue as string).getTime() || 0) - (new Date(bValue as string).getTime() || 0)) * direction;
+      return (
+        ((new Date(aValue as string).getTime() || 0) -
+          (new Date(bValue as string).getTime() || 0)) *
+        direction
+      );
     });
 
     const total = filtered.length;
@@ -203,6 +281,7 @@ export const mockTaskApi = {
       page: safePage,
       pageSize,
       totalPages,
+      summary,
     };
   },
 
@@ -236,7 +315,10 @@ export const mockTaskApi = {
     return newTask;
   },
 
-  async updateTask(taskId: string, input: Partial<CreateTaskInput>): Promise<Task> {
+  async updateTask(
+    taskId: string,
+    input: Partial<CreateTaskInput>,
+  ): Promise<Task> {
     await wait(350);
     const index = tasks.findIndex((task) => task.id === taskId);
     if (index === -1) {
@@ -248,9 +330,14 @@ export const mockTaskApi = {
       ...current,
       ...input,
       title: input.title?.trim() || current.title,
-      description: input.description !== undefined ? input.description?.trim() || undefined : current.description,
+      description:
+        input.description !== undefined
+          ? input.description?.trim() || undefined
+          : current.description,
       updatedAt: new Date().toISOString(),
-      owner: input.ownerId ? users.find((person) => person.id === input.ownerId) : current.owner,
+      owner: input.ownerId
+        ? users.find((person) => person.id === input.ownerId)
+        : current.owner,
     };
 
     tasks[index] = updated;
