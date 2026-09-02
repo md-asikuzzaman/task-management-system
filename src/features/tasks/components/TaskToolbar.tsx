@@ -153,7 +153,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
                   </div>
                   <Dialog.Close asChild>
                     <button
-                      className="rounded-md p-2 text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
+                      className="rounded-md p-2 text-red-500 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200 cursor-pointer"
                       aria-label="Close filters"
                     >
                       <X className="h-4 w-4" />
