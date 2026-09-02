@@ -1,5 +1,5 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { AlertTriangle, ChevronDown, PencilLine } from "lucide-react";
+import { ChevronDown, PencilLine } from "lucide-react";
 
 import type { Task, TaskStatus } from "../types";
 import {
@@ -173,9 +173,6 @@ export function TaskTable({
                   className="text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
                 >
                   <div className="flex items-start gap-2">
-                    {overdue ? (
-                      <AlertTriangle className="mt-1 h-4 w-4 shrink-0 text-red-500" />
-                    ) : null}
                     <h3 className="text-sm font-semibold text-slate-900">
                       {task.title}
                     </h3>
@@ -185,14 +182,14 @@ export function TaskTable({
               </div>
 
               <div className="mt-3 flex items-center justify-between gap-2 text-xs text-slate-500">
-                <span>Owner</span>
+                <span>Owner:</span>
                 <span className="font-medium text-slate-700">
                   {getOwnerName(task.owner)}
                 </span>
               </div>
 
               <div className="mt-2 flex items-center justify-between gap-2 text-xs text-slate-500">
-                <span>Due</span>
+                <span>Due:</span>
                 <span
                   className={
                     overdue
@@ -209,7 +206,7 @@ export function TaskTable({
                   <DropdownMenu.Trigger asChild>
                     <button
                       type="button"
-                      className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-2 py-1.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
+                      className="inline-flex items-center gap-2 border border-slate-200 bg-white px-2 py-1.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200 rounded-full"
                     >
                       <TaskStatusBadge status={task.status} />
                       <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
