@@ -73,15 +73,17 @@ export function TaskDetailsDialog({
               <div className="space-y-4">
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                   <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="min-w-0 break-words">
-                      <h3 className="break-words text-xl font-semibold text-slate-900">
+                    <div className="min-w-0 wrap-break-word">
+                      <h3 className="wrap-break-word text-xl font-semibold text-slate-900">
                         {task.title}
                       </h3>
-                      <p className="mt-2 break-words text-sm text-slate-600">
+                      <p className="mt-2 wrap-break-word text-sm text-slate-600">
                         {task.description || "No description provided."}
                       </p>
                     </div>
-                    <TaskPriorityBadge priority={task.priority} />
+                    <div>
+                      <TaskPriorityBadge priority={task.priority} />
+                    </div>
                   </div>
                 </div>
 
