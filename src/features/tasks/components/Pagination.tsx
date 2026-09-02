@@ -30,7 +30,7 @@ export function Pagination({
           : [1, "ellipsis", page - 1, page, page + 1, "ellipsis", totalPages];
 
   return (
-    <div className="flex items-center justify-between gap-1 rounded-xl border border-slate-200 bg-white px-2 py-2 shadow-sm sm:gap-2 sm:px-3">
+    <div className="flex items-center justify-between gap-1 rounded-xl border border-slate-200 bg-white px-2 py-2 shadow-xs sm:gap-2 sm:px-3">
       <button
         type="button"
         onClick={() => onPageChange(page - 1)}

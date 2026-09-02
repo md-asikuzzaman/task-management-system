@@ -51,7 +51,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       {cards.map(({ label, value, icon: Icon, accent }) => (
         <div
           key={label}
-          className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+          className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs"
         >
           <div className="flex items-center justify-between">
             <div>

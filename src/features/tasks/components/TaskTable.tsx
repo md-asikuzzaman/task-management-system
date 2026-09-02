@@ -92,7 +92,7 @@ export function TaskTable({
                       <DropdownMenu.Trigger asChild>
                         <button
                           type="button"
-                          className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-2 py-1.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
+                          className="inline-flex items-center gap-2 border border-slate-200 bg-white px-2 py-1.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200 rounded-full cursor-pointer"
                           aria-label={`Change status for ${task.title}`}
                         >
                           <TaskStatusBadge status={task.status} />
@@ -144,7 +144,7 @@ export function TaskTable({
                       <button
                         type="button"
                         onClick={() => onOpenTask(task.id)}
-                        className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1.5 text-sm text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
+                        className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2 py-1.5 text-sm text-slate-700 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200 cursor-pointer"
                       >
                         <PencilLine className="h-3.5 w-3.5" />
                         View

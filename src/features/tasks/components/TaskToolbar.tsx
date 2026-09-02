@@ -68,7 +68,7 @@ function FilterSelect({
           position="popper"
           side="bottom"
           sideOffset={4}
-          className="z-60 max-h-60 min-w-(--radix-select-trigger-width) overflow-y-auto rounded-lg border border-slate-200 bg-white p-1 shadow-xl"
+          className="z-60 max-h-60 min-w-(--radix-select-trigger-width) overflow-y-auto rounded-lg border border-slate-200 bg-white p-1 shadow-xs"
         >
           <Select.Viewport>
             {options.map((option) => (
@@ -110,7 +110,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
   }, [query]);
 
   return (
-    <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+    <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-3 shadow-xs sm:p-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div className="relative w-full lg:max-w-md">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -128,7 +128,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
             <Dialog.Trigger asChild>
               <button
                 type="button"
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200 cursor-pointer"
               >
                 <Filter className="h-4 w-4" />
                 <span>Filter</span>
@@ -141,7 +141,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
             </Dialog.Trigger>
             <Dialog.Portal>
               <Dialog.Overlay className="fixed inset-0 bg-slate-900/35" />
-              <Dialog.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md rounded-t-2xl border border-slate-200 bg-white p-4 shadow-2xl sm:inset-y-0 sm:left-auto sm:right-4 sm:top-4 sm:mx-0 sm:max-w-sm sm:rounded-2xl">
+              <Dialog.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-md rounded-t-2xl border border-slate-200 bg-white p-4 shadow-xl sm:inset-y-0 sm:left-auto sm:right-4 sm:top-4 sm:mx-0 sm:max-w-sm sm:rounded-2xl">
                 <div className="mb-4 flex items-center justify-between">
                   <div>
                     <Dialog.Title className="text-lg font-semibold text-slate-900">
@@ -248,7 +248,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
             <DropdownMenu.Trigger asChild>
               <button
                 type="button"
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200 cursor-pointer"
               >
                 <SortAsc className="h-4 w-4" />
                 <span>Sort</span>
@@ -258,7 +258,7 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
             <DropdownMenu.Portal>
               <DropdownMenu.Content
                 align="end"
-                className="z-50 min-w-48 rounded-xl border border-slate-200 bg-white p-1 shadow-xl"
+                className="z-50 min-w-48 rounded-xl border border-slate-200 bg-white p-1 shadow-xs"
               >
                 {sortOptions.map((option) => (
                   <DropdownMenu.Item

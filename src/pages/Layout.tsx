@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 
 function Layout() {
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-7xl px-3 pb-10 pt-4 sm:px-4 lg:px-6">
         <Navbar />
 
