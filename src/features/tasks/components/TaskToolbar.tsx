@@ -291,7 +291,6 @@ export function TaskToolbar({ onCreateTask }: { onCreateTask: () => void }) {
             type="button"
             onClick={onCreateTask}
             className="rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-200"
-            disabled
           >
             New task
           </button>

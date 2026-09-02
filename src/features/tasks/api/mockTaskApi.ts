@@ -8,10 +8,10 @@ import type {
 } from "../types";
 import { isTaskOverdue } from "../utils/taskUtils";
 
-const statusOptions: TaskStatus[] = ["todo", "in_progress", "review", "done"];
-const priorityOptions: TaskPriority[] = ["low", "medium", "high", "urgent"];
+const STATUS_OPTIONS: TaskStatus[] = ["todo", "in_progress", "review", "done"];
+const PRIORITY_OPTIONS: TaskPriority[] = ["low", "medium", "high", "urgent"];
 
-const users = [
+const USERS = [
   {
     id: "u-1",
     name: "Alyssa Thompson",
@@ -74,7 +74,7 @@ const users = [
   { id: "u-20", name: "Lucas Grant", email: "lucas@team.com", avatar: "LG" },
 ];
 
-const longTitles = [
+const LONG_TITLES = [
   "Finalize the payroll export validation for the Q4 global operations handoff",
   "Review the customer retention experiment and confirm rollout readiness for the north region",
   "Create a cleanup plan for stale support tickets and overdue follow-ups across all product pods",
@@ -110,7 +110,7 @@ const longTitles = [
   "Prepare a summary of customer health indicators for executive review and confirm the latest account updates",
 ];
 
-const descriptions = [
+const DESCRIPTIONS = [
   "This task requires coordination across product, engineering, and operations before the next release gate.",
   "Needs final review and follow-up on open blockers before the work can move to completion.",
   "The owner should review the existing checklist, confirm assumptions, and provide any missing context.",
@@ -129,183 +129,169 @@ const descriptions = [
   "Requires review of impacted systems and a concise communication update to all relevant stakeholders.",
 ];
 
-function pad2(value: number) {
-  return value.toString().padStart(2, "0");
-}
+const DATASET_CREATED_AT = new Date();
 
-const datasetCreatedAt = new Date();
+const wait = (ms = 300) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-function buildISODate(offsetDays: number) {
-  const date = new Date(datasetCreatedAt);
+const pad2 = (value: number) => value.toString().padStart(2, "0");
+
+const buildISODate = (offsetDays: number) => {
+  const date = new Date(DATASET_CREATED_AT);
   date.setHours(0, 0, 0, 0);
   date.setDate(date.getDate() + offsetDays);
   return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
-}
+};
 
-function makeTask(index: number): Task {
+const getDueOffset = (index: number) => {
+  if (index % 18 === 0) return -7;
+  if (index % 23 === 0) return 0;
+  if (index % 29 === 0) return 8;
+  return (index % 12) - 3;
+};
+
+const createTask = (index: number): Task => {
   const createdDaysAgo = (index * 11) % 90;
-  const createdAt = new Date(datasetCreatedAt);
+  const createdAt = new Date(DATASET_CREATED_AT);
+
   createdAt.setDate(createdAt.getDate() - createdDaysAgo);
-
-  const status = statusOptions[index % statusOptions.length];
-  const priority = priorityOptions[(index * 3) % priorityOptions.length];
-  const isOwnerMissing = index % 9 === 0;
-  const isLongTitle = index % 5 === 0;
-  const owner = isOwnerMissing ? undefined : users[index % users.length];
-  const hasDescription = index % 11 !== 0;
-  const hasDueDate = index % 7 !== 0;
-
-  const dueOffset =
-    index % 18 === 0
-      ? -7
-      : index % 23 === 0
-        ? 0
-        : index % 29 === 0
-          ? 8
-          : (index % 12) - 3;
-  const dueDate = hasDueDate ? buildISODate(dueOffset) : undefined;
 
   const openedAt = new Date(createdAt);
   openedAt.setDate(openedAt.getDate() + (index % 6));
 
+  const isOwnerMissing = index % 9 === 0;
+  const isLongTitle = index % 5 === 0;
+  const hasDescription = index % 11 !== 0;
+  const hasDueDate = index % 7 !== 0;
+
   return {
     id: `task-${index + 1}`,
     title: isLongTitle
-      ? longTitles[index % longTitles.length]
-      : `Task ${index + 1}: ${longTitles[index % longTitles.length].slice(0, 45)}`,
+      ? LONG_TITLES[index % LONG_TITLES.length]
+      : `Task ${index + 1}: ${LONG_TITLES[index % LONG_TITLES.length].slice(0, 45)}`,
     description: hasDescription
-      ? descriptions[index % descriptions.length]
+      ? DESCRIPTIONS[index % DESCRIPTIONS.length]
       : undefined,
-    status,
-    priority,
-    owner,
-    dueDate,
+    status: STATUS_OPTIONS[index % STATUS_OPTIONS.length],
+    priority: PRIORITY_OPTIONS[(index * 3) % PRIORITY_OPTIONS.length],
+    owner: isOwnerMissing ? undefined : USERS[index % USERS.length],
+    dueDate: hasDueDate ? buildISODate(getDueOffset(index)) : undefined,
     createdAt: openedAt.toISOString(),
     updatedAt: new Date(
       openedAt.getTime() + (index % 8) * 86400000,
     ).toISOString(),
   };
-}
+};
 
 const tasks: Task[] = Array.from({ length: 248 }, (_, index) =>
-  makeTask(index),
+  createTask(index),
 );
 
-async function wait(ms = 300) {
-  await new Promise((resolve) => {
-    setTimeout(resolve, ms);
+const getSummary = () => ({
+  total: tasks.length,
+  inProgress: tasks.filter((task) => task.status === "in_progress").length,
+  overdue: tasks.filter(isTaskOverdue).length,
+  unassigned: tasks.filter((task) => !task.owner).length,
+});
+
+const filterTasks = (query: TaskQuery) => {
+  const search = query.search?.trim().toLowerCase() ?? "";
+
+  return tasks.filter((task) => {
+    const matchesSearch =
+      !search ||
+      task.title.toLowerCase().includes(search) ||
+      task.owner?.name.toLowerCase().includes(search) ||
+      task.description?.toLowerCase().includes(search);
+
+    const matchesStatus =
+      !query.status || query.status === "all" || task.status === query.status;
+
+    const matchesPriority =
+      !query.priority ||
+      query.priority === "all" ||
+      task.priority === query.priority;
+
+    const matchesOwner =
+      !query.owner || query.owner === "all" || task.owner?.id === query.owner;
+
+    return matchesSearch && matchesStatus && matchesPriority && matchesOwner;
   });
-}
+};
+
+const sortTasks = (items: Task[], query: TaskQuery) => {
+  const sort = query.sort ?? "updatedAt";
+  const direction = query.order === "asc" ? 1 : -1;
+
+  return [...items].sort((a, b) => {
+    if (sort === "priority") {
+      return (
+        (PRIORITY_OPTIONS.indexOf(a.priority) -
+          PRIORITY_OPTIONS.indexOf(b.priority)) *
+        direction
+      );
+    }
+
+    if (sort === "title") {
+      return a.title.localeCompare(b.title) * direction;
+    }
+
+    const aValue = a[sort] ?? "";
+    const bValue = b[sort] ?? "";
+    const comparison = String(aValue).localeCompare(String(bValue));
+
+    return comparison !== 0 ? comparison * direction : a.id.localeCompare(b.id);
+  });
+};
+
+const paginateTasks = (items: Task[], query: TaskQuery) => {
+  const pageSize = Math.max(1, Number(query.pageSize ?? 10));
+  const requestedPage = Math.max(1, Number(query.page ?? 1));
+  const total = items.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const page = Math.min(requestedPage, totalPages);
+  const start = (page - 1) * pageSize;
+
+  return {
+    tasks: items.slice(start, start + pageSize),
+    total,
+    page,
+    pageSize,
+    totalPages,
+  };
+};
 
 export const mockTaskApi = {
   async getTasks(query: TaskQuery = {}): Promise<TaskListResponse> {
     await wait();
 
-    const search = (query.search ?? "").trim().toLowerCase();
-    const status = query.status ?? "all";
-    const priority = query.priority ?? "all";
-    const owner = query.owner ?? "all";
-    const sort = query.sort ?? "updatedAt";
-    const order = query.order ?? "desc";
-    const page = Math.max(1, Number(query.page ?? 1));
-    const pageSize = Math.max(1, Number(query.pageSize ?? 10));
-
-    const summary = {
-      total: tasks.length,
-      inProgress: tasks.filter((task) => task.status === "in_progress").length,
-      overdue: tasks.filter((task) => isTaskOverdue(task)).length,
-      unassigned: tasks.filter((task) => !task.owner).length,
-    };
-
-    let filtered = [...tasks];
-
-    if (search) {
-      filtered = filtered.filter((task) => {
-        const ownerName = task.owner?.name ?? "";
-        return (
-          task.title.toLowerCase().includes(search) ||
-          ownerName.toLowerCase().includes(search) ||
-          task.description?.toLowerCase().includes(search)
-        );
-      });
-    }
-
-    if (status !== "all") {
-      filtered = filtered.filter((task) => task.status === status);
-    }
-
-    if (priority !== "all") {
-      filtered = filtered.filter((task) => task.priority === priority);
-    }
-
-    if (owner !== "all") {
-      filtered = filtered.filter((task) => task.owner?.id === owner);
-    }
-
-    filtered.sort((a, b) => {
-      const direction = order === "asc" ? 1 : -1;
-
-      if (sort === "priority") {
-        return (
-          ((priorityOptions.indexOf(a.priority) ?? 0) -
-            (priorityOptions.indexOf(b.priority) ?? 0)) *
-          direction
-        );
-      }
-
-      if (sort === "title") {
-        return a.title.localeCompare(b.title) * direction;
-      }
-
-      const aValue = a[sort] ?? "";
-      const bValue = b[sort] ?? "";
-
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        const comparison = aValue.localeCompare(bValue);
-        return comparison !== 0
-          ? comparison * direction
-          : a.id.localeCompare(b.id);
-      }
-
-      const comparison =
-        (new Date(aValue as string).getTime() || 0) -
-        (new Date(bValue as string).getTime() || 0);
-      return comparison !== 0
-        ? comparison * direction
-        : a.id.localeCompare(b.id);
-    });
-
-    const total = filtered.length;
-    const totalPages = Math.max(1, Math.ceil(total / pageSize));
-    const safePage = Math.min(page, totalPages);
-    const start = (safePage - 1) * pageSize;
-    const paginated = filtered.slice(start, start + pageSize);
+    const filtered = filterTasks(query);
+    const sorted = sortTasks(filtered, query);
+    const paginated = paginateTasks(sorted, query);
 
     return {
-      tasks: paginated,
-      total,
-      page: safePage,
-      pageSize,
-      totalPages,
-      summary,
+      ...paginated,
+      summary: getSummary(),
     };
   },
 
   async getTask(taskId: string): Promise<Task> {
     await wait();
+
     const task = tasks.find((item) => item.id === taskId);
-    if (!task) {
-      throw new Error("Task not found");
-    }
+
+    if (!task) throw new Error("Task not found");
+
     return task;
   },
 
   async createTask(input: CreateTaskInput): Promise<Task> {
     await wait(450);
 
-    const owner = users.find((person) => person.id === input.ownerId);
+    const owner = USERS.find((user) => user.id === input.ownerId);
     const createdAt = new Date().toISOString();
-    const newTask: Task = {
+
+    const task: Task = {
       id: `task-${Date.now()}`,
       title: input.title.trim(),
       description: input.description?.trim() || undefined,
@@ -317,8 +303,9 @@ export const mockTaskApi = {
       updatedAt: createdAt,
     };
 
-    tasks.unshift(newTask);
-    return newTask;
+    tasks.unshift(task);
+
+    return task;
   },
 
   async updateTask(
@@ -326,12 +313,13 @@ export const mockTaskApi = {
     input: Partial<CreateTaskInput>,
   ): Promise<Task> {
     await wait(350);
+
     const index = tasks.findIndex((task) => task.id === taskId);
-    if (index === -1) {
-      throw new Error("Task not found");
-    }
+
+    if (index === -1) throw new Error("Task not found");
 
     const current = tasks[index];
+
     const updated: Task = {
       ...current,
       ...input,
@@ -340,40 +328,45 @@ export const mockTaskApi = {
         input.description !== undefined
           ? input.description?.trim() || undefined
           : current.description,
+      owner:
+        input.ownerId !== undefined
+          ? USERS.find((user) => user.id === input.ownerId)
+          : current.owner,
       updatedAt: new Date().toISOString(),
-      owner: input.ownerId
-        ? users.find((person) => person.id === input.ownerId)
-        : current.owner,
     };
 
     tasks[index] = updated;
+
     return updated;
   },
 
   async updateTaskStatus(taskId: string, status: TaskStatus): Promise<Task> {
     await wait(250);
-    const index = tasks.findIndex((task) => task.id === taskId);
-    if (index === -1) {
-      throw new Error("Task not found");
-    }
 
-    const updated = {
+    const index = tasks.findIndex((task) => task.id === taskId);
+
+    if (index === -1) throw new Error("Task not found");
+
+    const updated: Task = {
       ...tasks[index],
       status,
       updatedAt: new Date().toISOString(),
     };
+
     tasks[index] = updated;
+
     return updated;
   },
 
   async deleteTask(taskId: string): Promise<void> {
     await wait(200);
+
     const index = tasks.findIndex((task) => task.id === taskId);
-    if (index === -1) {
-      throw new Error("Task not found");
-    }
+
+    if (index === -1) throw new Error("Task not found");
+
     tasks.splice(index, 1);
   },
 };
 
-export const mockUsers = users;
+export const mockUsers = USERS;

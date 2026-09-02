@@ -46,15 +46,20 @@ export function useTaskStatusUpdater() {
   return async (taskId: string, status: TaskStatus) => {
     const previous = client.getQueryData<TaskListData>(taskKeys.all);
     await client.cancelQueries({ queryKey: taskKeys.all });
-    client.setQueriesData({ queryKey: taskKeys.all }, (current: TaskListData | undefined) => {
-      if (!current || !current.tasks) return current;
-      return {
-        ...current,
-        tasks: current.tasks.map((task) =>
-          task.id === taskId ? { ...task, status, updatedAt: new Date().toISOString() } : task,
-        ),
-      };
-    });
+    client.setQueriesData(
+      { queryKey: taskKeys.all },
+      (current: TaskListData | undefined) => {
+        if (!current || !current.tasks) return current;
+        return {
+          ...current,
+          tasks: current.tasks.map((task) =>
+            task.id === taskId
+              ? { ...task, status, updatedAt: new Date().toISOString() }
+              : task,
+          ),
+        };
+      },
+    );
 
     try {
       await taskApi.updateTaskStatus(taskId, status);

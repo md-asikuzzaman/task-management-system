@@ -1,5 +1,11 @@
 import { mockTaskApi } from "./mockTaskApi";
-import type { CreateTaskInput, Task, TaskListResponse, TaskQuery, TaskStatus } from "../types";
+import type {
+  CreateTaskInput,
+  Task,
+  TaskListResponse,
+  TaskQuery,
+  TaskStatus,
+} from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL as string | undefined;
 
@@ -22,14 +28,18 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const taskApi = {
   async getTasks(query: TaskQuery = {}): Promise<TaskListResponse> {
+    // throw new Error("Failed to load tasks");
+
     if (!API_URL) {
       return mockTaskApi.getTasks(query);
     }
 
     const search = new URLSearchParams();
     if (query.search) search.set("search", query.search);
-    if (query.status && query.status !== "all") search.set("status", query.status);
-    if (query.priority && query.priority !== "all") search.set("priority", query.priority);
+    if (query.status && query.status !== "all")
+      search.set("status", query.status);
+    if (query.priority && query.priority !== "all")
+      search.set("priority", query.priority);
     if (query.owner && query.owner !== "all") search.set("owner", query.owner);
     if (query.sort) search.set("sort", query.sort);
     if (query.order) search.set("order", query.order);
@@ -58,7 +68,10 @@ export const taskApi = {
     });
   },
 
-  async updateTask(taskId: string, input: Partial<CreateTaskInput>): Promise<Task> {
+  async updateTask(
+    taskId: string,
+    input: Partial<CreateTaskInput>,
+  ): Promise<Task> {
     if (!API_URL) {
       return mockTaskApi.updateTask(taskId, input);
     }
