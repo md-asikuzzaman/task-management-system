@@ -269,6 +269,8 @@ export const mockTaskApi = {
     const sorted = sortTasks(filtered, query);
     const paginated = paginateTasks(sorted, query);
 
+    // return null;
+
     return {
       ...paginated,
       summary: getSummary(),

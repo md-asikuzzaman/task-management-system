@@ -31,6 +31,7 @@ export const taskApi = {
     // throw new Error("Failed to load tasks");
 
     if (!API_URL) {
+      
       return mockTaskApi.getTasks(query);
     }
 

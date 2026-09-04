@@ -4,9 +4,9 @@ A modern, responsive team task management system built with React and TypeScript
 
 ## Live Demo
 
-**Live Demo:** `https://your-deployment-url.com`
+**Live Demo:** `https://task-management-system-asik.vercel.app`
 
-**Repository:** `https://github.com/YOUR_USERNAME/team-task-management-system`
+**Repository:** `https://github.com/md-asikuzzaman/task-management-system`
 
 ---
 
@@ -16,17 +16,17 @@ TaskFlow is a frontend-focused task management application developed as part of 
 
 The application focuses on:
 
-* Clean and responsive UI
-* Reusable React components
-* Type-safe development with TypeScript
-* Search, filtering, sorting, and pagination
-* URL-based task view state
-* Server-state management with TanStack Query
-* Client/UI state management with Zustand
-* Accessible interactions
-* Responsive mobile task presentation
-* Realistic mock data
-* API-ready architecture
+- Clean and responsive UI
+- Reusable React components
+- Type-safe development with TypeScript
+- Search, filtering, sorting, and pagination
+- URL-based task view state
+- Server-state management with TanStack Query
+- Client/UI state management with Zustand
+- Accessible interactions
+- Responsive mobile task presentation
+- Realistic mock data
+- API-ready architecture
 
 ---
 
@@ -34,31 +34,36 @@ The application focuses on:
 
 ### Desktop — 1280px
 
-![Desktop Screenshot](./public/screenshots/desktop.png)
+![Desktop Screenshot](./src/assets/desktop.png)
 
 ### Tablet — 768px
 
-![Tablet Screenshot](./public/screenshots/tablet.png)
+![Tablet Screenshot](./src/assets/tab.png)
 
 ### Mobile — 375px
 
-![Mobile Screenshot](./public/screenshots/mobile.png)
+![Mobile Screenshot](./src/assets/mobile.png)
 
 ### Mobile Filter Sheet
 
-![Mobile Filter Sheet](./public/screenshots/mobile-filter.png)
+![Mobile Filter Sheet](./src/assets/mobile-filter.png)
 
 ### Create Task Dialog
 
-![Create Task Dialog](./public/screenshots/create-task.png)
+![Create Task Dialog](./src/assets/mobile-add.png)
 
 ### Error State
 
-![Error State](./public/screenshots/error-state.png)
+![Error State](./src/assets/mobile-error.png)
 
 ### Empty State
 
-![Empty State](./public/screenshots/empty-state.png)
+![Empty State](./src/assets/mobile-empty.png)
+
+### Lite House score
+
+![Light House Score](./src/assets/lighthouse.png)
+
 
 ---
 
@@ -66,37 +71,35 @@ The application focuses on:
 
 ### Task Management
 
-* Create tasks
-* View task details
-* Edit tasks
-* Delete tasks
-* Update task status
-* Assign tasks to team members
-* Set task priority
-* Set task due dates
+- Create tasks
+- View task details
+- Update task status
 
 ### Search
 
 Tasks can be searched by:
 
-* Task title
-* Description
-* Owner name
+- Task title
+- Description
+- Owner name
 
 ### Filtering
 
 Tasks can be filtered by:
 
-* Status
-* Priority
-* Owner
+- Status
+- Priority
+- Owner
 
 ### Sorting
 
 Tasks can be sorted by relevant task fields with:
 
-* Ascending order
-* Descending order
+- Created At
+- Updated At
+- Due Date
+- Title
+- Priority
 
 ### Pagination
 
@@ -106,18 +109,18 @@ The task list supports pagination with configurable page size.
 
 The dashboard displays:
 
-* Total tasks
-* In-progress tasks
-* Overdue tasks
-* Unassigned tasks
+- Total tasks
+- In-progress tasks
+- Overdue tasks
+- Unassigned tasks
 
 ### Responsive Design
 
 The application is designed for:
 
-* Mobile — 375px
-* Tablet — 768px
-* Desktop — 1280px+
+- Mobile — 375px
+- Tablet — 768px
+- Desktop — 1280px+
 
 On mobile devices, the desktop table is transformed into a mobile-friendly task card/list layout instead of relying on horizontal scrolling.
 
@@ -125,29 +128,29 @@ On mobile devices, the desktop table is transformed into a mobile-friendly task 
 
 The application includes:
 
-* Loading state
-* Skeleton loading
-* Error state
-* Retry functionality
-* Empty state
-* Filtered-empty state
-* Hover states
-* Focus states
-* Disabled states
+- Loading state
+- Skeleton loading
+- Error state
+- Retry functionality
+- Empty state
+- Filtered-empty state
+- Hover states
+- Focus states
+- Disabled states
 
 ---
 
 ## Tech Stack
 
-* **React**
-* **TypeScript**
-* **Vite**
-* **TanStack Query**
-* **Zustand**
-* **React Router**
-* **Tailwind CSS**
-* **Radix UI**
-* **Lucide React**
+- **React**
+- **TypeScript**
+- **Vite**
+- **TanStack Query**
+- **Zustand**
+- **React Router**
+- **Tailwind CSS**
+- **Radix UI**
+- **Lucide React**
 
 ---
 
@@ -239,7 +242,6 @@ The UI does not need to change when switching between mock and real API implemen
 | `createTask()`       | Create a task                                    | `POST /tasks`             |
 | `updateTask()`       | Update a task                                    | `PUT /tasks/:id`          |
 | `updateTaskStatus()` | Update task status                               | `PATCH /tasks/:id/status` |
-| `deleteTask(id)`     | Delete a task                                    | `DELETE /tasks/:id`       |
 
 The mock API follows the same interface as the expected backend API.
 
@@ -251,25 +253,23 @@ The mock API follows the same interface as the expected backend API.
 
 TanStack Query is responsible for server state including:
 
-* Task lists
-* Task details
-* Creating tasks
-* Updating tasks
-* Updating task status
-* Deleting tasks
-* Loading states
-* Error states
-* Query invalidation
-* Refetching
+- Task lists
+- Task details
+- Creating tasks
+- Updating task status
+- Loading states
+- Error states
+- Query invalidation
+- Refetching
 
 ### Zustand
 
 Zustand is used for client-side UI state such as:
 
-* Dialog state
-* Mobile filter sheet state
-* Selected task
-* Temporary UI interactions
+- Dialog state
+- Mobile filter sheet state
+- Selected task
+- Temporary UI interactions
 
 ### URL Query Parameters
 
@@ -283,9 +283,9 @@ Example:
 
 This makes the current task view:
 
-* Shareable
-* Refresh-safe
-* Browser-navigation friendly
+- Shareable
+- Refresh-safe
+- Browser-navigation friendly
 
 ---
 
@@ -293,37 +293,20 @@ This makes the current task view:
 
 ```text
 src/
+├── assets
 ├── components/
-│   ├── tasks/
-│   ├── ui/
-│   └── layout/
-│
-├── hooks/
+├── features
+│   └── api
+│   └── components
+│   └── hooks
+│   └── utils
 │
 ├── pages/
 │
-├── services/
-│   ├── taskApi.ts
-│   └── mockTaskApi.ts
-│
 ├── store/
-│
-├── types/
-│
-├── lib/
 │
 ├── App.tsx
 └── main.tsx
-
-public/
-└── screenshots/
-    ├── desktop.png
-    ├── tablet.png
-    ├── mobile.png
-    ├── mobile-filter.png
-    ├── create-task.png
-    ├── error-state.png
-    └── empty-state.png
 ```
 
 ---
@@ -332,17 +315,17 @@ public/
 
 ### Prerequisites
 
-* Node.js 20+
-* npm, pnpm, or yarn
+- Node.js 20+
+- npm, pnpm, or yarn
 
 ### Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/team-task-management-system.git
+git clone https://github.com/md-asikuzzaman/task-management-system
 ```
 
 ```bash
-cd team-task-management-system
+cd task-management-system
 ```
 
 ### Install Dependencies
@@ -393,17 +376,17 @@ The application includes approximately 250 realistic task records.
 
 The mock dataset intentionally contains different scenarios such as:
 
-* Different task statuses
-* Different priorities
-* Assigned tasks
-* Unassigned tasks
-* Missing descriptions
-* Missing due dates
-* Long task titles
-* Long owner names
-* Overdue tasks
-* Tasks due today
-* Future due dates
+- Different task statuses
+- Different priorities
+- Assigned tasks
+- Unassigned tasks
+- Missing descriptions
+- Missing due dates
+- Long task titles
+- Long owner names
+- Overdue tasks
+- Tasks due today
+- Future due dates
 
 This helps test the UI against realistic data and edge cases rather than only ideal content.
 
@@ -439,47 +422,15 @@ Accessibility was considered throughout the interface.
 
 The application includes:
 
-* Keyboard-friendly controls
-* Visible focus states
-* Semantic HTML where appropriate
-* Accessible dialogs
-* Accessible form controls
-* Appropriate touch target sizes
-* Responsive layouts
-* Sufficient visual contrast
-* Clear interactive states
-
----
-
-## Error Handling
-
-The application provides a retryable error state when task loading fails.
-
-Example:
-
-```text
-Couldn't load tasks.
-
-Please check your connection and try again.
-
-[ Try again ]
-```
-
-For development purposes, API errors can be simulated using:
-
-```js
-localStorage.setItem("simulate-api-error", "true")
-```
-
-Reload the application to display the error state.
-
-To disable the simulated error:
-
-```js
-localStorage.removeItem("simulate-api-error")
-```
-
-Then use the **Try again** action.
+- Keyboard-friendly controls
+- Visible focus states
+- Semantic HTML where appropriate
+- Accessible dialogs
+- Accessible form controls
+- Appropriate touch target sizes
+- Responsive layouts
+- Sufficient visual contrast
+- Clear interactive states
 
 ---
 
@@ -513,36 +464,11 @@ AI tools were used during development as an implementation and problem-solving a
 
 I remained responsible for:
 
-* Project structure and architecture decisions
-* UI/UX decisions
-* Technology selection
-* Reviewing generated code
-* Refactoring implementations
-* Testing functionality
-* Handling edge cases
-* Making final implementation decisions
-
-AI-generated suggestions were reviewed, adapted, and tested to fit the application's requirements.
-
----
-
-## Scope
-
-The implementation focuses on the core requirements of the task management system.
-
-The following features were intentionally kept outside the current scope:
-
-* Authentication
-* Role and permission management
-* Notifications
-* Comments
-* File uploads
-* Calendar views
-* Billing
-* Real-time collaboration
-* Complex workflow automation
-
-These features can be added independently in a production environment.
+- UI/UX decisions
+- Testing functionality
+- Handling edge cases
+- Generate some code
+- Reviewing generated code
 
 ---
 
@@ -550,16 +476,16 @@ These features can be added independently in a production environment.
 
 Potential future improvements include:
 
-* Real backend integration
-* Authentication and authorization
-* Database persistence
-* Optimistic updates
-* Real-time task updates
-* Advanced permissions
-* Automated testing
-* Audit history
-* Drag-and-drop task organization
-* CI/CD pipeline
+- Real backend integration
+- Authentication and authorization
+- Database persistence
+- Optimistic updates
+- Real-time task updates
+- Advanced permissions
+- Automated testing
+- Audit history
+- Drag-and-drop task organization
+- CI/CD pipeline
 
 ---
 
